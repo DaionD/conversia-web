@@ -2,434 +2,419 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>CONVERSIA | Agentes Digitales & Automatización Avanzada</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONVERSIA | Agentes Digitales High-Tech</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* ── VARIABLES & PALETA HIGH-TECH ── */
+        :root {
+            --bg-dark: #030712;
+            --neon-cyan: #00f0ff;
+            --neon-purple: #7000ff;
+            --neon-green: #00ff66;
+            --glass-bg: rgba(6, 11, 25, 0.65);
+            --glass-border: rgba(0, 240, 255, 0.25);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --font-title: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            font-family: var(--font-body);
         }
 
         body {
-            background-color: #030712;
-            color: #f3f4f6;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             line-height: 1.5;
             overflow-x: hidden;
+            font-size: 1.1rem;
         }
 
-        /* Fondo dinámico adaptable */
-        body::before {
-            content: "";
+        /* ── BACKGROUND VIDEO & OVERLAY ── */
+        .video-background {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 50% 10%, rgba(14, 165, 233, 0.18) 0%, transparent 60%),
-                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 30px 30px, 30px 30px;
-            z-index: -1;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
         }
 
-        /* HEADER OPTIMIZADO PARA MÓVIL */
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.35) contrast(1.2) hue-rotate(15deg);
+        }
+
+        /* Scanlines Effect (Red Digital en Pantalla) */
+        .overlay-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                linear-gradient(rgba(3, 7, 18, 0.7), rgba(3, 7, 18, 0.85)),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.03) 3px, transparent 4px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ── HEADER HIGH-TECH ── */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 5%;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            background: rgba(3, 7, 18, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1rem 1.5rem;
+            backdrop-filter: blur(15px);
+            background: rgba(3, 7, 18, 0.75);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
         }
 
         .logo {
-            font-size: clamp(18px, 4vw, 22px);
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
+            font-family: var(--font-title);
+            font-weight: 900;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
         }
 
-        .nav-buttons {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .telegram-btn-nav {
-            background: rgba(14, 165, 233, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
-            padding: 8px 12px;
+        .btn-header {
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
             text-decoration: none;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .cta-btn {
-            background: linear-gradient(135deg, #0284c7, #38bdf8);
-            color: #ffffff;
-            padding: 9px 16px;
-            text-decoration: none;
-            border-radius: 50px;
+            font-family: var(--font-title);
+            font-size: 0.8rem;
             font-weight: 700;
-            font-size: 13px;
-            letter-spacing: 0.3px;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
-            transition: all 0.2s ease;
-            display: inline-block;
-            text-align: center;
-            white-space: nowrap;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .cta-btn:active, .telegram-btn-large:active {
-            transform: scale(0.97);
+        .btn-header:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-green);
         }
 
-        /* HERO SECTION */
+        /* ── HERO SECTION ── */
         .hero {
             text-align: center;
-            padding: 48px 20px 40px;
-            max-width: 900px;
+            padding: 2.5rem 1.5rem 1rem;
+            max-width: 850px;
             margin: 0 auto;
         }
 
         .badge {
-            display: inline-block;
-            padding: 5px 14px;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.25);
-            border-radius: 100px;
-            color: #38bdf8;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(112, 0, 255, 0.15);
+            color: var(--neon-cyan);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-family: var(--font-title);
+            font-size: 0.75rem;
+            border: 1px solid var(--neon-purple);
+            margin-bottom: 1.2rem;
+            box-shadow: 0 0 12px rgba(112, 0, 255, 0.3);
         }
 
         .hero h1 {
-            font-size: clamp(32px, 8vw, 56px);
-            font-weight: 800;
-            line-height: 1.15;
-            margin-bottom: 16px;
-            background: linear-gradient(to bottom, #ffffff 30%, #94a3b8 100%);
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #ffffff 0%, var(--neon-cyan) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
         }
 
         .hero p {
-            font-size: clamp(15px, 4vw, 19px);
-            color: #94a3b8;
-            margin-bottom: 28px;
-            font-weight: 300;
-            padding: 0 4px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
         }
 
-        /* SERVICIOS / TARJETAS */
-        .services {
-            padding: 40px 16px;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* ── BOT INTERACTIVO DEMO (CYBER-CARD ARRIBA) ── */
+        .bot-demo-section {
+            max-width: 650px;
+            margin: 0.5rem auto 3rem;
+            padding: 0 1.2rem;
         }
 
-        .section-title {
+        .bot-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
             text-align: center;
-            margin-bottom: 32px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 240, 255, 0.05);
+            position: relative;
         }
 
-        .section-title h2 {
-            font-size: clamp(24px, 6vw, 36px);
-            font-weight: 800;
-            color: #ffffff;
+        /* Esquinas Cyberpunk HUD */
+        .bot-card::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 20px;
+            height: 20px;
+            border-right: 3px solid var(--neon-cyan);
+            border-bottom: 3px solid var(--neon-cyan);
         }
 
-        .section-title p {
-            color: #64748b;
-            font-size: 14px;
-            margin-top: 6px;
+        .bot-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 20px;
+            height: 20px;
+            border-left: 3px solid var(--neon-cyan);
+            border-top: 3px solid var(--neon-cyan);
+        }
+
+        .bot-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-title);
+            font-size: 0.8rem;
+            color: var(--neon-green);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            background: rgba(0, 255, 102, 0.08);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 102, 0.3);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-green);
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        .bot-card h2 {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .bot-card p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.8rem;
+        }
+
+        .btn-telegram-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #0088cc, #00d2ff);
+            color: #fff;
+            padding: 1.1rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: var(--font-title);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-telegram-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(0, 210, 255, 0.8);
+            background: linear-gradient(135deg, #00aaff, #00f0ff);
+            color: #000;
+        }
+
+        .btn-telegram-primary svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* ── SECCIÓN DE CASOS / SECTORES ── */
+        .use-cases {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .use-cases h3 {
+            font-family: var(--font-title);
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+            color: #fff;
+            text-transform: uppercase;
         }
 
         .grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 16px;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .grid { grid-template-columns: repeat(3, 1fr); }
         }
 
         .card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 24px 20px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1.8rem 1.2rem;
+            backdrop-filter: blur(15px);
             transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            transform: translateY(-5px);
         }
 
         .card-icon {
-            width: 42px;
-            height: 42px;
-            background: rgba(56, 189, 248, 0.1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            color: #38bdf8;
-            font-weight: 800;
-            font-size: 18px;
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
         }
 
-        .card h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-            color: #f9fafb;
-            font-weight: 600;
+        .card h4 {
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            margin-bottom: 0.6rem;
+            color: var(--neon-cyan);
         }
 
         .card p {
-            color: #9ca3af;
-            font-size: 14px;
-            font-weight: 300;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            color: var(--text-muted);
         }
 
-        /* SECCIÓN BOT TELEGRAM */
-        .demo-section {
-            padding: 20px 16px 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .demo-box {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(99, 102, 241, 0.12));
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 20px;
-            padding: 28px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 20px;
-        }
-
-        .demo-text h3 {
-            font-size: clamp(20px, 5vw, 26px);
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-
-        .demo-text p {
-            color: #94a3b8;
-            font-size: 14px;
-        }
-
-        .telegram-btn-large {
-            background: #229ED9;
-            color: #ffffff;
-            padding: 14px 28px;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            max-width: 320px;
-            box-shadow: 0 0 20px rgba(34, 158, 217, 0.35);
-            transition: all 0.2s ease;
-        }
-
-        /* SECCIÓN CONTACTO */
-        .contact-section {
-            padding: 20px 16px 60px;
-            text-align: center;
-        }
-
-        .contact-box {
-            max-width: 700px;
-            margin: 0 auto;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
-            padding: 36px 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .contact-box h2 {
-            font-size: clamp(22px, 5vw, 32px);
-            margin-bottom: 12px;
-            color: #ffffff;
-        }
-
-        .contact-box p {
-            color: #94a3b8;
-            margin-bottom: 24px;
-            font-size: 14px;
-        }
-
-        .contact-box .cta-btn {
-            width: 100%;
-            max-width: 320px;
-            padding: 14px 28px;
-            font-size: 15px;
-        }
-
+        /* ── FOOTER ── */
         footer {
             text-align: center;
-            padding: 24px 16px;
-            color: #475569;
-            font-size: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* MEDIA QUERIES PARA PANTALLAS DE ORDENADOR (TABLETS Y DESKTOPS) */
-        @media (min-width: 640px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (min-width: 960px) {
-            header {
-                padding: 20px 8%;
-            }
-
-            .telegram-btn-nav {
-                padding: 10px 18px;
-                font-size: 13px;
-            }
-
-            .cta-btn {
-                padding: 11px 22px;
-                font-size: 14px;
-            }
-
-            .hero {
-                padding: 100px 20px 70px;
-            }
-
-            .services, .demo-section {
-                padding-left: 8%;
-                padding-right: 8%;
-            }
-
-            .grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 24px;
-            }
-
-            .card {
-                padding: 36px 28px;
-            }
-
-            .demo-box {
-                flex-direction: row;
-                text-align: left;
-                padding: 40px;
-                justify-content: space-between;
-            }
-
-            .demo-text p {
-                max-width: 550px;
-            }
-
-            .telegram-btn-large {
-                width: auto;
-            }
-
-            .contact-box {
-                padding: 56px 40px;
-            }
-
-            .contact-box .cta-btn {
-                width: auto;
-            }
+            padding: 2rem 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            background: rgba(3, 7, 18, 0.9);
         }
     </style>
 </head>
 <body>
 
+    <!-- FONDO DE VÍDEO CYBERPUNK (Servidor CDN de alta velocidad) -->
+    <div class="video-background">
+        <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1518770660439-4636190af475">
+            <source src="https://cdn.coverr.co/videos/coverr-digital-network-lines-5339/1080p.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Malla de Escaneo (Efecto Pantalla Neón) -->
+    <div class="overlay-grid"></div>
+
+    <!-- 1. HEADER NAVEGACIÓN -->
     <header>
         <div class="logo">CONVERSIA</div>
-        <div class="nav-buttons">
-            <a href="https://t.me/tradeDaion_bot" target="_blank" class="telegram-btn-nav">✈ Probar Bot</a>
-            <a href="#contacto" class="cta-btn">Empezar</a>
-        </div>
+        <a href="https://wa.me/" class="btn-header" target="_blank">⚡ CONTACTAR</a>
     </header>
 
-    <section class="hero">
-        <div class="badge">Ecosistema de Automatización</div>
-        <h1>Agentes Digitales que Operan y Escalan tu Negocio</h1>
-        <p>Convertimos tareas complejas en flujos automáticos 24/7. Respuestas inmediatas, gestión de datos e integración directa.</p>
-        <a href="#contacto" class="cta-btn">Solicitar Prototipo</a>
-    </section>
+    <main>
+        <!-- 2. PORTADA / HERO -->
+        <section class="hero">
+            <span class="badge">⚙️ AGENTES AUTÓNOMOS DE IA</span>
+            <h1>Infraestructura Digital de Automatización</h1>
+            <p>Implementamos bots interactivos para comercio, hostelería y trading en tiempo real.</p>
+        </section>
 
-    <section class="services">
-        <div class="section-title">
-            <h2>Módulos Especializados</h2>
-            <p>Infraestructura adaptable a la operativa de tu sector</p>
-        </div>
-        <div class="grid">
-            <div class="card">
-                <div class="card-icon">&lt;/&gt;</div>
-                <h3>Sistemas de Trading & API</h3>
-                <p>Infraestructura para señales en tiempo real, canales interactivos y ejecución automatizada conectada directamente a exchanges mediante claves API seguras.</p>
+        <!-- 3. MÓDULO INTERACTIVO DEL BOT (ARRIBA DEL TODO) -->
+        <section class="bot-demo-section">
+            <div class="bot-card">
+                <div class="bot-status">
+                    <span class="dot"></span> SISTEMA ACTIVO EN TIEMPO REAL
+                </div>
+                <h2>🤖 PRUEBA EL AGENTE DEMO</h2>
+                <p>Haz clic abajo para iniciar la demostración en Telegram (Respuestas dinámicas, alertas y opciones automatizadas):</p>
+                
+                <a href="https://t.me/tradeDaion_bot" target="_blank" class="btn-telegram-primary">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.67-.54.83-1.1.52l-3.04-2.24-1.47 1.41c-.16.16-.3.3-.61.3l.22-3.1 5.64-5.1c.25-.22-.05-.34-.38-.12l-6.97 4.39-3.01-.94c-.66-.21-.67-.66.14-.98l11.75-4.53c.55-.2 1.03.13.84.91z"/>
+                    </svg>
+                    PROBAR @tradeDaion_bot EN TELEGRAM
+                </a>
             </div>
-            <div class="card">
-                <div class="card-icon">⚡</div>
-                <h3>Flujos para Hostelería</h3>
-                <p>Procesamiento autónomo de comandas, reservas sincronizadas en tiempo real y atención inmediata en canal digital sin saturar al personal de sala.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">Ͼ</div>
-                <h3>Atención & Conversión Local</h3>
-                <p>Captura activa de clientes potenciales, agenda automatizada y resolución de consultas operativas para cualquier modelo comercial.</p>
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="demo-section">
-        <div class="demo-box">
-            <div class="demo-text">
-                <h3>Prueba nuestro Bot interactivo</h3>
-                <p>Accede directamente a <strong>@tradeDaion_bot</strong> para interactuar con la demostración en tiempo real de nuestras señales e interacciones automatizadas.</p>
+        <!-- 4. SECTORES Y APLICACIONES -->
+        <section class="use-cases">
+            <h3>Ecosistemas Automatizados</h3>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">📈</div>
+                    <h4>Trading & Alertas</h4>
+                    <p>Monitoreo continuo de activos con reglas automáticas de gestión de riesgo y notificaciones instantáneas.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🍔</div>
+                    <h4>Hostelería & QR</h4>
+                    <p>Comandas enviadas directamente a cocina, reservas automatizadas y atención por WhatsApp sin intermediarios.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏬</div>
+                    <h4>Comercio & Citas</h4>
+                    <p>Agendamiento 24/7 sincronizado con calendario, captura de clientes potenciales y soporte automático.</p>
+                </div>
             </div>
-            <a href="https://t.me/tradeDaion_bot" target="_blank" class="telegram-btn-large">
-                <span>Probar @tradeDaion_bot</span> ✈
-            </a>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <section class="contact-section" id="contacto">
-        <div class="contact-box">
-            <h2>¿Listo para automatizar la operativa?</h2>
-            <p>Analizamos tu flujo de trabajo actual y desarrollamos una arquitectura a medida para tu empresa.</p>
-            <a href="https://wa.me/" class="cta-btn" target="_blank">Iniciar Consulta Técnica</a>
-        </div>
-    </section>
-
+    <!-- 5. FOOTER -->
     <footer>
-        &copy; 2026 CONVERSIA. Arquitectura de Software & Automatización Modular.
+        <p>© 2026 CONVERSIA | Agentes de Automatización Avanzada.</p>
     </footer>
 
 </body>
