@@ -3,128 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversia | Soluciones de Automatización e IA</title>
+    <title>CONVERSIA | Agentes Digitales & Automatización Avanzada</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background-color: #0f172a;
-            color: #f8fafc;
+            background-color: #030712;
+            color: #f3f4f6;
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Background grid effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 50% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            z-index: -1;
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 5%;
-            background-color: #1e293b;
-            border-bottom: 1px solid #334155;
+            padding: 24px 8%;
+            backdrop-filter: blur(12px);
+            background: rgba(3, 7, 18, 0.6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #38bdf8;
-            letter-spacing: 1px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
         }
 
         .cta-btn {
-            background-color: #38bdf8;
-            color: #0f172a;
-            padding: 10px 20px;
+            background: linear-gradient(135deg, #0284c7, #38bdf8);
+            color: #ffffff;
+            padding: 12px 24px;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: background 0.3s;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
         }
 
         .cta-btn:hover {
-            background-color: #7dd3fc;
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
         }
 
         .hero {
             text-align: center;
-            padding: 80px 20px;
-            max-width: 800px;
+            padding: 120px 20px 80px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 100px;
+            color: #38bdf8;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
         .hero h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            color: #ffffff;
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(to bottom, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
             font-size: 20px;
             color: #94a3b8;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            font-weight: 300;
         }
 
         .services {
-            padding: 60px 5%;
-            max-width: 1100px;
+            padding: 80px 8%;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        .services h2 {
+        .section-title {
             text-align: center;
-            margin-bottom: 40px;
-            font-size: 32px;
-            color: #38bdf8;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .section-title p {
+            color: #64748b;
+            margin-top: 8px;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
         }
 
         .card {
-            background-color: #1e293b;
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid #334155;
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(16px);
+            padding: 40px 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            color: #38bdf8;
+            font-weight: 800;
+            font-size: 20px;
         }
 
         .card h3 {
-            margin-bottom: 15px;
-            color: #f1f5f9;
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #f9fafb;
+            font-weight: 600;
         }
 
         .card p {
-            color: #94a3b8;
+            color: #9ca3af;
             font-size: 15px;
+            font-weight: 300;
+            line-height: 1.6;
         }
 
         .contact-section {
-            background-color: #1e293b;
-            padding: 60px 20px;
+            padding: 100px 20px;
             text-align: center;
-            border-top: 1px solid #334155;
+            position: relative;
         }
 
-        .contact-section h2 {
-            margin-bottom: 15px;
+        .contact-box {
+            max-width: 700px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8));
+            padding: 60px 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.1);
         }
 
-        .contact-section p {
+        .contact-box h2 {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        .contact-box p {
             color: #94a3b8;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
+            font-size: 16px;
         }
 
         footer {
             text-align: center;
-            padding: 20px;
-            color: #64748b;
-            font-size: 14px;
-            border-top: 1px solid #1e293b;
+            padding: 30px;
+            color: #475569;
+            font-size: 13px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 38px;
+            }
+            .hero p {
+                font-size: 16px;
+            }
+            .card {
+                padding: 28px 20px;
+            }
         }
     </style>
 </head>
@@ -132,41 +260,50 @@
 
     <header>
         <div class="logo">CONVERSIA</div>
-        <a href="#contacto" class="cta-btn">Solicitar Demo</a>
+        <a href="#contacto" class="cta-btn">Desplegar Bot</a>
     </header>
 
     <section class="hero">
-        <h1>Automatización e Inteligencia Artificial para tu Negocio</h1>
-        <p>Optimizamos la atención al cliente, captamos clientes potenciales y automatizamos tus procesos operativos 24/7 mediante asistentes virtuales a medida.</p>
-        <a href="#contacto" class="cta-btn">Comenzar Ahora</a>
+        <div class="badge">Ecosistema de Automatización</div>
+        <h1>Agentes Digitales que Operan y Escalan tu Negocio</h1>
+        <p>Convertimos tareas complejas en flujos automáticos 24/7. Respuestas inmediatas, gestión de datos e integración directa con tu infraestructura.</p>
+        <a href="#contacto" class="cta-btn">Solicitar Prototipo</a>
     </section>
 
     <section class="services">
-        <h2>Soluciones por Sector</h2>
+        <div class="section-title">
+            <h2>Módulos Especializados</h2>
+            <p>Infraestructura adaptable a la operativa de cada sector</p>
+        </div>
         <div class="grid">
             <div class="card">
-                <h3>Hostelería y Bares</h3>
-                <p>Gestión de reservas, toma de pedidos automatizada y respuestas inmediatas sobre la carta o dirección directamente por chat.</p>
+                <div class="card-icon">&lt;/&gt;</div>
+                <h3>Sistemas de Trading & API</h3>
+                <p>Infraestructura para señales en tiempo real, canales interactivos y ejecución automatizada conectada directamente a exchanges mediante claves API seguras.</p>
             </div>
             <div class="card">
-                <h3>Trading y Finanzas</h3>
-                <p>Bots de formación, alertas en tiempo real e integración con plataformas operativas mediante conexión API segura.</p>
+                <div class="card-icon">⚡</div>
+                <h3>Flujos para Hostelería</h3>
+                <p>Procesamiento autónomo de comandas, reservas sincronizadas en tiempo real y atención inmediata en canal digital sin saturar al personal de sala.</p>
             </div>
             <div class="card">
-                <h3>Comercio y Servicios</h3>
-                <p>Atención al cliente ininterrumpida, programación de citas y cualificación de clientes potenciales para cualquier tipo de empresa.</p>
+                <div class="card-icon">Ͼ</div>
+                <h3>Atención & Conversión Local</h3>
+                <p>Captura activa de clientes potenciales, agenda automatizada y resolución de consultas operativas para cualquier modelo comercial.</p>
             </div>
         </div>
     </section>
 
     <section class="contact-section" id="contacto">
-        <h2>¿Listo para escalar tu negocio?</h2>
-        <p>Ponte en contacto con nosotros y diseñaremos un bot adaptado a tus necesidades operativas.</p>
-        <a href="https://wa.me/" class="cta-btn" target="_blank">Contactar por WhatsApp</a>
+        <div class="contact-box">
+            <h2>¿Listo para automatizar la operativa?</h2>
+            <p>Analizamos tu flujo de trabajo actual y desarrollamos una arquitectura a medida para tu empresa.</p>
+            <a href="https://wa.me/" class="cta-btn" target="_blank">Iniciar Consulta Técnica</a>
+        </div>
     </section>
 
     <footer>
-        &copy; 2026 Conversia. Todos los derechos reservados.
+        &copy; 2026 CONVERSIA. Arquitectura de Software & Automatización Modular.
     </footer>
 
 </body>
