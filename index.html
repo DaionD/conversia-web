@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CONVERSIA | Agentes Digitales High-Tech</title>
+    <meta name="description" content="CONVERSIA construye agentes de IA y bots de automatización a medida para trading, hostelería, comercio y procesos de negocio. Prueba la demo en vivo del bot de trading en Telegram.">
+    <meta property="og:title" content="CONVERSIA | Agentes Digitales & Automatización">
+    <meta property="og:description" content="Bots y agentes de IA a medida para trading, hostelería, comercio y automatización de procesos. Mira la demo en vivo.">
+    <meta property="og:image" content="favicon-256.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" sizes="256x256" href="favicon-256.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="favicon-256.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
@@ -86,12 +94,21 @@
         }
 
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
             font-family: var(--font-title);
             font-weight: 900;
             font-size: 1.4rem;
             letter-spacing: 3px;
             color: #fff;
             text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+        }
+
+        .logo img {
+            height: 42px;
+            width: 42px;
+            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.55));
         }
 
         .btn-header {
@@ -359,8 +376,8 @@
 
     <!-- 1. HEADER NAVEGACIÓN -->
     <header>
-        <div class="logo">CONVERSIA</div>
-        <a href="https://wa.me/" class="btn-header" target="_blank">⚡ CONTACTAR</a>
+        <div class="logo"><img src="logo-conversia.png" alt="CONVERSIA">CONVERSIA</div>
+        <a href="#" class="btn-header" onclick="abrirChat(event)">⚡ CONTACTAR</a>
     </header>
 
     <main>
@@ -416,6 +433,40 @@
     <footer>
         <p>© 2026 CONVERSIA | Agentes de Automatización Avanzada.</p>
     </footer>
+
+    <!-- Chat en vivo (Tawk.to) — el botón "CONTACTAR" abre esta ventana. -->
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/6aaa1b638c8aee343ee48cbb/1k2k7lvgl';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+
+        // Ocultamos la burbuja flotante por defecto: la única entrada al chat
+        // es el botón "CONTACTAR" del header, para mantener el diseño limpio.
+        Tawk_API.onLoad = function () {
+            Tawk_API.hideWidget();
+        };
+    </script>
+    <!--End of Tawk.to Script-->
+
+    <script>
+        // El botón "CONTACTAR" abre el chat en vivo (sin exponer ningún
+        // número de teléfono). El visitante puede escribir de forma anónima;
+        // solo se identifica si él quiere.
+        function abrirChat(event) {
+            event.preventDefault();
+            if (window.Tawk_API && Tawk_API.showWidget) {
+                Tawk_API.showWidget();
+                Tawk_API.maximize();
+            }
+        }
+    </script>
 
 </body>
 </html>
