@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONVERSIA | Agentes Digitales High-Tech</title>
+    <meta name="description" content="CONVERSIA construye agentes de IA y bots de automatización a medida para trading, hostelería, comercio y procesos de negocio. Prueba la demo en vivo del bot de trading en Telegram.">
+    <meta property="og:title" content="CONVERSIA | Agentes Digitales & Automatización">
+    <meta property="og:description" content="Bots y agentes de IA a medida para trading, hostelería, comercio y automatización de procesos. Mira la demo en vivo.">
+    <meta property="og:image" content="favicon-256.png">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/png" sizes="256x256" href="favicon-256.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="favicon-256.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ── VARIABLES & PALETA HIGH-TECH ── */
+        :root {
+            --bg-dark: #030712;
+            --neon-cyan: #00f0ff;
+            --neon-purple: #7000ff;
+            --neon-green: #00ff66;
+            --glass-bg: rgba(6, 11, 25, 0.65);
+            --glass-border: rgba(0, 240, 255, 0.25);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --font-title: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-body);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.5;
+            overflow-x: hidden;
+            font-size: 1.1rem;
+        }
+
+        /* ── BACKGROUND VIDEO & OVERLAY ── */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.35) contrast(1.2) hue-rotate(15deg);
+        }
+
+        /* Scanlines Effect (Red Digital en Pantalla) */
+        .overlay-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                linear-gradient(rgba(3, 7, 18, 0.7), rgba(3, 7, 18, 0.85)),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 240, 255, 0.03) 3px, transparent 4px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ── HEADER HIGH-TECH ── */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            backdrop-filter: blur(15px);
+            background: rgba(3, 7, 18, 0.75);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-title);
+            font-weight: 900;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+        }
+
+        .logo img {
+            height: 42px;
+            width: 42px;
+            filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.55));
+        }
+
+        .btn-header {
+            background: rgba(0, 255, 102, 0.1);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-family: var(--font-title);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-header:hover {
+            background: var(--neon-green);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        /* ── HERO SECTION ── */
+        .hero {
+            text-align: center;
+            padding: 2.5rem 1.5rem 1rem;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(112, 0, 255, 0.15);
+            color: var(--neon-cyan);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-family: var(--font-title);
+            font-size: 0.75rem;
+            border: 1px solid var(--neon-purple);
+            margin-bottom: 1.2rem;
+            box-shadow: 0 0 12px rgba(112, 0, 255, 0.3);
+        }
+
+        .hero h1 {
+            font-family: var(--font-title);
+            font-size: 2.2rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #ffffff 0%, var(--neon-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── BOT INTERACTIVO DEMO (CYBER-CARD ARRIBA) ── */
+        .bot-demo-section {
+            max-width: 650px;
+            margin: 0.5rem auto 3rem;
+            padding: 0 1.2rem;
+        }
+
+        .bot-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 240, 255, 0.05);
+            position: relative;
+        }
+
+        /* Esquinas Cyberpunk HUD */
+        .bot-card::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 20px;
+            height: 20px;
+            border-right: 3px solid var(--neon-cyan);
+            border-bottom: 3px solid var(--neon-cyan);
+        }
+
+        .bot-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 20px;
+            height: 20px;
+            border-left: 3px solid var(--neon-cyan);
+            border-top: 3px solid var(--neon-cyan);
+        }
+
+        .bot-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-title);
+            font-size: 0.8rem;
+            color: var(--neon-green);
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+            background: rgba(0, 255, 102, 0.08);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 102, 0.3);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-green);
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        .bot-card h2 {
+            font-family: var(--font-title);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .bot-card p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.8rem;
+        }
+
+        .btn-telegram-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #0088cc, #00d2ff);
+            color: #fff;
+            padding: 1.1rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: var(--font-title);
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-telegram-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(0, 210, 255, 0.8);
+            background: linear-gradient(135deg, #00aaff, #00f0ff);
+            color: #000;
+        }
+
+        .btn-telegram-primary svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        /* ── SECCIÓN DE CASOS / SECTORES ── */
+        .use-cases {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        .use-cases h3 {
+            font-family: var(--font-title);
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 2.5rem;
+            letter-spacing: 2px;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 1.8rem 1.2rem;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card h4 {
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            margin-bottom: 0.6rem;
+            color: var(--neon-cyan);
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            background: rgba(3, 7, 18, 0.9);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FONDO DE VÍDEO CYBERPUNK (Servidor CDN de alta velocidad) -->
+    <div class="video-background">
+        <video autoplay loop muted playsinline poster="https://images.unsplash.com/photo-1518770660439-4636190af475">
+            <source src="https://cdn.coverr.co/videos/coverr-digital-network-lines-5339/1080p.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Malla de Escaneo (Efecto Pantalla Neón) -->
+    <div class="overlay-grid"></div>
+
+    <!-- 1. HEADER NAVEGACIÓN -->
+    <header>
+        <div class="logo"><img src="logo-conversia.png" alt="CONVERSIA">CONVERSIA</div>
+        <a href="#" class="btn-header" onclick="abrirChat(event)">⚡ CONTACTAR</a>
+    </header>
+
+    <main>
+        <!-- 2. PORTADA / HERO -->
+        <section class="hero">
+            <span class="badge">⚙️ AGENTES AUTÓNOMOS DE IA</span>
+            <h1>Sistema Digital de Automatización</h1>
+            <p>Implementamos bots interactivos para comercio, hostelería y trading en tiempo real.</p>
+        </section>
+
+        <!-- 3. MÓDULO INTERACTIVO DEL BOT (ARRIBA DEL TODO) -->
+        <section class="bot-demo-section">
+            <div class="bot-card">
+                <div class="bot-status">
+                    <span class="dot"></span> SISTEMA ACTIVO EN TIEMPO REAL
+                </div>
+                <h2>🤖 PRUEBA EL AGENTE DEMO</h2>
+                <p>Haz clic abajo para iniciar la demostración en Telegram (Respuestas dinámicas, alertas y opciones automatizadas):</p>
+                
+                <a href="https://t.me/tradeDaion_bot" target="_blank" class="btn-telegram-primary">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.67-.54.83-1.1.52l-3.04-2.24-1.47 1.41c-.16.16-.3.3-.61.3l.22-3.1 5.64-5.1c.25-.22-.05-.34-.38-.12l-6.97 4.39-3.01-.94c-.66-.21-.67-.66.14-.98l11.75-4.53c.55-.2 1.03.13.84.91z"/>
+                    </svg>
+                    PROBAR @tradeDaion_bot EN TELEGRAM
+                </a>
+            </div>
+        </section>
+
+        <!-- 4. SECTORES Y APLICACIONES -->
+        <section class="use-cases">
+            <h3>Ecosistemas Automatizados</h3>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-icon">📈</div>
+                    <h4>Trading & Alertas</h4>
+                    <p>Monitoreo continuo de activos con reglas automáticas de gestión de riesgo y notificaciones instantáneas.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🍔</div>
+                    <h4>Hostelería & QR</h4>
+                    <p>Comandas enviadas directamente a cocina, reservas automatizadas y atención por WhatsApp sin intermediarios.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🏬</div>
+                    <h4>Comercio & Citas</h4>
+                    <p>Agendamiento 24/7 sincronizado con calendario, captura de clientes potenciales y soporte automático.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 5. FOOTER -->
+    <footer>
+        <p>© 2026 CONVERSIA | Agentes de Automatización Avanzada.</p>
+    </footer>
+
+    <!-- Chat en vivo (Tawk.to) — el botón "CONTACTAR" abre esta ventana. -->
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/6aaa1b638c8aee343ee48cbb/1k2k7lvgl';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+
+        // Ocultamos la burbuja flotante por defecto: la única entrada al chat
+        // es el botón "CONTACTAR" del header, para mantener el diseño limpio.
+        Tawk_API.onLoad = function () {
+            Tawk_API.hideWidget();
+        };
+    </script>
+    <!--End of Tawk.to Script-->
+
+    <script>
+        // El botón "CONTACTAR" abre el chat en vivo (sin exponer ningún
+        // número de teléfono). El visitante puede escribir de forma anónima;
+        // solo se identifica si él quiere.
+        function abrirChat(event) {
+            event.preventDefault();
+            if (window.Tawk_API && Tawk_API.showWidget) {
+                Tawk_API.showWidget();
+                Tawk_API.maximize();
+            }
+        }
+    </script>
+
+</body>
+</html>
