@@ -63,9 +63,20 @@ class Settings(BaseSettings):
     # --- logging -------------------------------------------------
     log_level: str = "INFO"
 
+    # --- API layer -------------------------------------------------
+    api_host: str = "0.0.0.0"
+    api_port: int = 8000
+    api_run_engine: bool = False
+    cors_origins: str = "*"
+    ws_broadcast_interval_seconds: float = 2.0
+
     @property
     def symbol_list(self) -> list[str]:
         return [s.strip() for s in self.symbols.split(",") if s.strip()]
+
+    @property
+    def cors_origins_list(self) -> list[str]:
+        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
 settings = Settings()

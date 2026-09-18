@@ -10,12 +10,14 @@ from typing import Sequence
 import pandas as pd
 
 from connectors.base_connector import BaseExchangeConnector
+from connectors.exceptions import ConnectorError
 from core import indicators
 from core.enums import MarketRegime, OrderSide, OrderType, PositionSide, SignalAction
 from core.models import OrderRequest, Position, Signal
 from core.order_manager import OrderManager
 from core.regime_engine import RegimeEngine
 from core.risk_manager import KillSwitchActive, RiskManager
+from core.state import EngineState
 from strategies.base_strategy import BaseStrategy
 
 logger = logging.getLogger("amras.engine")
@@ -30,6 +32,7 @@ class AmrasEngine:
         risk_manager: RiskManager,
         symbols: Sequence[str],
         timeframe: str = "1h",
+        state: EngineState | None = None,
     ) -> None:
         self.connector = connector
         self.order_manager = OrderManager(connector)
@@ -39,22 +42,46 @@ class AmrasEngine:
         self.symbols = list(symbols)
         self.timeframe = timeframe
         self.open_positions: dict[str, Position] = {}
+        self.state = state
 
     def run_cycle(self) -> None:
-        equity = self.connector.get_balance().total
+        try:
+            equity = self.connector.get_balance().total
+        except ConnectorError as exc:
+            logger.error("Cycle aborted: could not fetch balance: %s", exc)
+            if self.state:
+                self.state.update_status(broker_connected=False, data_feed_online=False)
+                self.state.record_error(str(exc))
+            return
+
         self.risk_manager.register_equity(equity)
+        if self.state:
+            self.state.set_equity(equity)
 
         try:
             self.risk_manager.ensure_trading_allowed()
         except KillSwitchActive as exc:
             logger.warning("Cycle skipped: %s", exc)
+            if self.state:
+                self.state.update_status(
+                    algorithms_online=True, broker_connected=True, data_feed_online=True,
+                    risk_engine_active=True, kill_switch_halted=True,
+                )
             return
+
+        if self.state:
+            self.state.update_status(
+                algorithms_online=True, broker_connected=True, data_feed_online=True,
+                risk_engine_active=True, kill_switch_halted=False,
+            )
 
         for symbol in self.symbols:
             try:
                 self._process_symbol(symbol, equity)
-            except Exception:
+            except Exception as exc:
                 logger.exception("Error processing symbol %s", symbol)
+                if self.state:
+                    self.state.record_error(f"{symbol}: {exc}")
 
     def _process_symbol(self, symbol: str, equity: float) -> None:
         candles = self.connector.get_historical_klines(symbol, self.timeframe, limit=250)
@@ -62,6 +89,9 @@ class AmrasEngine:
         df.attrs["symbol"] = symbol
 
         regime = self.regime_engine.classify(df)
+        if self.state:
+            self.state.set_regime(symbol, regime)
+            self.state.set_price(symbol, float(df["close"].iloc[-1]))
 
         if symbol in self.open_positions:
             self._manage_open_position(symbol, df)
@@ -80,6 +110,9 @@ class AmrasEngine:
 
         if not self.risk_manager.validate_signal(signal):
             return
+
+        if self.state:
+            self.state.record_signal(signal)
 
         self._execute_signal(signal, equity)
 
@@ -100,9 +133,11 @@ class AmrasEngine:
             )
 
         result = self.order_manager.submit(request)
+        if self.state:
+            self.state.record_order(result)
 
         position_side = PositionSide.LONG if side == OrderSide.BUY else PositionSide.SHORT
-        self.open_positions[signal.symbol] = Position(
+        position = Position(
             symbol=signal.symbol,
             side=position_side,
             entry_price=result.filled_price or signal.entry_price,
@@ -112,6 +147,9 @@ class AmrasEngine:
             strategy_name=signal.strategy_name,
             initial_risk=abs(signal.entry_price - signal.stop_loss),
         )
+        self.open_positions[signal.symbol] = position
+        if self.state:
+            self.state.upsert_position(position)
         logger.info("Opened %s position on %s via %s", position_side, signal.symbol, signal.strategy_name)
 
     def _manage_open_position(self, symbol: str, df: pd.DataFrame) -> None:
@@ -135,9 +173,13 @@ class AmrasEngine:
 
     def _close_position(self, symbol: str, price: float, reason: str) -> None:
         position = self.open_positions.pop(symbol)
+        if self.state:
+            self.state.remove_position(symbol)
         side = OrderSide.SELL if position.side == PositionSide.LONG else OrderSide.BUY
         request = OrderRequest(symbol=symbol, side=side, order_type=OrderType.MARKET, amount=position.amount, price=price)
-        self.order_manager.submit(request)
+        result = self.order_manager.submit(request)
+        if self.state:
+            self.state.record_order(result)
         logger.info("Closed %s position on %s (%s) at %.6f", position.side, symbol, reason, price)
 
     def run_forever(self, poll_seconds: int = 60) -> None:

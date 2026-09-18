@@ -18,6 +18,7 @@ from connectors.factory import build_connector
 from core.engine import AmrasEngine
 from core.regime_engine import RegimeEngine, RegimeThresholds
 from core.risk_manager import RiskConfig, RiskManager
+from core.state import EngineState
 from strategies.breakout import BreakoutConfig, BreakoutStrategy
 from strategies.mean_reversion import MeanReversionConfig, MeanReversionStrategy
 from strategies.trend_following import TrendFollowingConfig, TrendFollowingStrategy
@@ -33,7 +34,7 @@ def _handle_shutdown(signum, frame) -> None:
     _shutdown_requested = True
 
 
-def build_engine() -> AmrasEngine:
+def build_engine(state: EngineState | None = None) -> AmrasEngine:
     connector = build_connector(
         exchange_name=settings.exchange_name,
         api_key=settings.api_key,
@@ -92,6 +93,7 @@ def build_engine() -> AmrasEngine:
         risk_manager=risk_manager,
         symbols=settings.symbol_list,
         timeframe=settings.timeframe,
+        state=state,
     )
 
 

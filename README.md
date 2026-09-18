@@ -41,6 +41,13 @@ brokers tradicionales (MetaTrader 5, Interactive Brokers).
                      │ BaseExchangeConnector  │   universal adapter contract
                      │  CCXT · MT5* · IB*     │   (*stubs, ready to implement)
                      └───────────────────────┘
+
+     AmrasEngine publishes every cycle into ──► core/state.py (EngineState)
+                                                        │
+                                                        ▼
+                                           api/app.py — FastAPI REST + WebSocket
+                                          (reads the latest snapshot only; never
+                                           calls the exchange on a client request)
 ```
 
 ## Estructura de carpetas
@@ -74,9 +81,17 @@ connectors/       Capa de abstracción universal multi-exchange/broker
   factory.py         build_connector(): selecciona el conector según EXCHANGE_NAME
   exceptions.py       Jerarquía de errores de dominio (Network, Auth, Order, ...)
 
-tests/            Suite pytest (regime engine, risk manager, estrategias, conectores)
+api/              Capa API (FastAPI): expone el estado del motor por REST/WebSocket
+  schemas.py         Modelos Pydantic de respuesta (contrato público de la API)
+  converters.py       Traduce los modelos de dominio (core/models.py) a schemas
+  engine_runner.py    Corre AmrasEngine en un hilo de fondo, publica en EngineState
+  app.py              Endpoints REST + WebSocket /ws/stream
+
+tests/            Suite pytest (regime engine, risk manager, estrategias, conectores,
+                  EngineState, endpoints de la API)
 logs/             amras.log (aplicación) y execution.log (auditoría de órdenes)
-main.py           Punto de entrada: arma el motor y corre el loop principal
+main.py           Punto de entrada CLI: arma el motor y corre el loop principal
+api_main.py       Punto de entrada API: levanta el servidor FastAPI (uvicorn)
 ```
 
 ## Instalación
@@ -124,6 +139,49 @@ El loop principal, para cada símbolo en `SYMBOLS`:
 
 Se detiene limpiamente con `Ctrl+C` (SIGINT) o `SIGTERM`.
 
+## API (Fase 3)
+
+La capa API expone el estado del motor por REST y WebSocket, para que
+`dashboard.html` (u otro cliente) lo consuma sin hablar nunca directamente
+con el exchange.
+
+```bash
+python api_main.py
+# equivalente a: uvicorn api.app:app --host 0.0.0.0 --port 8000
+```
+
+Por defecto (`API_RUN_ENGINE=false` en `.env.example`) la API levanta sin
+motor de trading real: todos los endpoints responden, pero el estado está
+vacío. Esto permite probar la API y el dashboard sin credenciales de
+exchange. Cuando `EXCHANGE_NAME`/`API_KEY`/`API_SECRET` estén listos
+(sandbox o real), pon `API_RUN_ENGINE=true` y la API arranca `AmrasEngine`
+en un hilo de fondo (`api/engine_runner.py`) que publica cada ciclo en
+`core/state.py` (`EngineState`, protegido por lock). Los endpoints solo
+leen ese snapshot en memoria — ninguna petición HTTP llama al exchange, así
+que la latencia de la API es independiente de la latencia del exchange. Si
+el conector falla (red, credenciales inválidas), el ciclo se registra como
+error en `EngineState` y el bucle sigue vivo, listo para el próximo ciclo.
+
+**Endpoints:**
+
+| Método | Ruta                    | Descripción                                   |
+|--------|-------------------------|------------------------------------------------|
+| GET    | `/api/health`           | Estado del proceso + si el hilo del motor vive |
+| GET    | `/api/status`           | Algoritmos/feed/broker online, kill switch      |
+| GET    | `/api/portfolio`        | Equity actual                                   |
+| GET    | `/api/regime`           | Régimen de mercado por símbolo                  |
+| GET    | `/api/positions`        | Posiciones abiertas + PnL no realizado           |
+| GET    | `/api/signals/recent`   | Últimas señales generadas por las estrategias    |
+| GET    | `/api/orders/recent`    | Últimas órdenes ejecutadas (slippage, fees, latencia) |
+| WS     | `/ws/stream`             | Snapshot completo cada `WS_BROADCAST_INTERVAL_SECONDS` |
+
+Documentación interactiva (Swagger) en `http://localhost:8000/docs` una vez
+levantado el servidor.
+
+> `dashboard.html` sigue usando datos simulados en el navegador por ahora;
+> conectarlo a estos endpoints (reemplazando `MarketFeed` por `fetch`/`WebSocket`
+> contra `/api/...` y `/ws/stream`) es el siguiente paso natural.
+
 ## Tests
 
 ```bash
@@ -132,17 +190,18 @@ pytest
 
 Cubre: clasificación de régimen con series sintéticas, sizing de posición,
 validación de R:R, break-even/trailing, kill switch por drawdown diario,
-generación de señales por estrategia, y la fábrica de conectores.
+generación de señales por estrategia, la fábrica de conectores, `EngineState`
+y los endpoints de la API (con el hilo del motor desactivado, sin red real).
 
-## Próximas fases
+## Estado del proyecto por fases
 
-- **Fase 2 — Dashboard de control**: interfaz web (panel `AMRAS Quantitative
-  Trading System`, estilo glassmorphism cian/verde sobre fondo oscuro,
-  paneles de Trend-Following / Mean-Reversion / Breakout, Risk Shield
-  central, matriz de órdenes pendientes y estado del sistema en vivo)
-  consumiendo este motor vía una API REST/WebSocket.
-- **Fase 3 — Backtesting**: motor de backtesting vectorizado reutilizando
+- ✅ **Fase 1 — Motor**: arquitectura core, estrategias, risk engine, conectores.
+- ✅ **Fase 2 — Dashboard**: `dashboard.html`, panel visual con datos simulados.
+- ✅ **Fase 3 — API**: capa REST/WebSocket (`api/`) sobre `EngineState`.
+- ⬜ **Fase 3b — Integración**: conectar `dashboard.html` a la API real en vez
+  de la simulación en el navegador.
+- ⬜ **Fase 4 — Backtesting**: motor de backtesting vectorizado reutilizando
   `RegimeEngine`, `RiskManager` y las estrategias tal cual, sobre datos
   históricos.
-- **Fase 4 — Conectores nativos**: implementación real de `MT5Connector`
+- ⬜ **Fase 5 — Conectores nativos**: implementación real de `MT5Connector`
   e `IBConnector`.
