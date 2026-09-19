@@ -1,0 +1,118 @@
+//@version=6
+strategy("AMRAS V12 Test", overlay=true, initial_capital=3000,
+     pyramiding=0, commission_type=strategy.commission.percent,
+     commission_value=0.05, slippage=10,
+     calc_on_every_tick=false, process_orders_on_close=false)
+
+// ===== MODULOS =====
+enableTrend = input.bool(true,  "Modulo TENDENCIA", group="Modulos")
+enableRange = input.bool(true,  "Modulo RANGO",     group="Modulos")
+enableLong  = input.bool(true,  "Permitir LARGOS",  group="Modulos")
+enableShort = input.bool(true,  "Permitir CORTOS",  group="Modulos")
+
+// ===== RIESGO =====
+riskPct = input.float(1.0, "Riesgo por operacion (%)", minval=0.1, step=0.25, group="Riesgo")
+maxLev  = input.float(2.0, "Apalancamiento maximo (x)", minval=0.5, step=0.5, group="Riesgo")
+rr      = input.float(2.2, "Ratio R/B (si no hay trailing)", minval=0.5, step=0.1, group="Riesgo")
+atrLen  = input.int(14, "Periodo ATR", minval=1, group="Riesgo")
+atrMult = input.float(1.5, "ATR x para SL", minval=0.5, step=0.1, group="Riesgo")
+
+// ===== REGIMEN =====
+adxLen   = input.int(14, "Periodo ADX", minval=1, group="Regimen")
+trendAdx = input.float(22.0, "ADX minimo tendencia", group="Regimen")
+rangeAdx = input.float(18.0, "ADX maximo rango",     group="Regimen")
+
+// ===== TENDENCIA =====
+emaFastLen = input.int(10,  "EMA rapida", minval=1, group="Tendencia")
+emaSlowLen = input.int(100, "EMA lenta",  minval=2, group="Tendencia")
+
+// ===== RANGO =====
+bbLen  = input.int(20, "Bollinger periodo", minval=2, group="Rango")
+bbMult = input.float(2.0, "Bollinger desviaciones", step=0.1, group="Rango")
+rsiLen = input.int(14, "RSI periodo", minval=2, group="Rango")
+rsiOS  = input.float(30.0, "RSI sobreventa",  group="Rango")
+rsiOB  = input.float(70.0, "RSI sobrecompra", group="Rango")
+
+// ===== SALIDA =====
+useTrail   = input.bool(false, "Usar trailing por ATR (sin TP fijo)", group="Salida")
+trailStart = input.float(1.5, "Trailing: activar a X ATR", step=0.1, group="Salida")
+trailOff   = input.float(1.0, "Trailing: distancia X ATR", step=0.1, group="Salida")
+
+// ===== FILTROS =====
+startHour    = input.int(8,  "Hora inicio (UTC)", minval=0, maxval=23, group="Filtros")
+endHour      = input.int(18, "Hora fin (UTC)",    minval=1, maxval=24, group="Filtros")
+useHours     = input.bool(true,  "Filtrar por horario", group="Filtros")
+skipWeekends = input.bool(true,  "No operar fin de semana", group="Filtros")
+
+// ===== INDICADORES =====
+atr = ta.atr(atrLen)
+[diP, diM, adx] = ta.dmi(adxLen, adxLen)
+emaF = ta.ema(close, emaFastLen)
+emaS = ta.ema(close, emaSlowLen)
+[bbMid, bbUp, bbLo] = ta.bb(close, bbLen, bbMult)
+rsi = ta.rsi(close, rsiLen)
+
+adxRising = adx > adx[1]
+hr  = hour(time, "UTC")
+dow = dayofweek(time, "UTC")
+inHours = not useHours or (hr >= startHour and hr < endHour)
+inDay   = not skipWeekends or (dow != dayofweek.saturday and dow != dayofweek.sunday)
+canTrade = inHours and inDay and barstate.isconfirmed
+
+// ===== SENALES =====
+trendMode = adx >= trendAdx and adxRising
+rangeMode = adx <= rangeAdx
+
+trendLong  = enableTrend and trendMode and close > emaS and emaF > emaS and close > open
+trendShort = enableTrend and trendMode and close < emaS and emaF < emaS and close < open
+rangeLong  = enableRange and rangeMode and low  <= bbLo and rsi <= rsiOS
+rangeShort = enableRange and rangeMode and high >= bbUp and rsi >= rsiOB
+
+// ===== TAMANO DE POSICION =====
+f_qty(slDist) =>
+    riskAmt = strategy.equity * riskPct / 100.0
+    q1 = riskAmt / slDist
+    q2 = strategy.equity * maxLev / close
+    math.max(math.min(q1, q2), 0.0)
+
+// ===== ENTRADAS =====
+var float entryAtr = na
+var string curId = ""
+
+if canTrade and strategy.position_size == 0 and not na(atr) and not na(adx) and not na(emaS)
+    slDist = atr * atrMult
+    q = f_qty(slDist)
+    if q > 0
+        if enableLong and trendLong
+            entryAtr := atr
+            curId := "TREND_L"
+            strategy.entry(curId, strategy.long, qty=q)
+        else if enableShort and trendShort
+            entryAtr := atr
+            curId := "TREND_S"
+            strategy.entry(curId, strategy.short, qty=q)
+        else if enableLong and rangeLong
+            entryAtr := atr
+            curId := "RANGE_L"
+            strategy.entry(curId, strategy.long, qty=q)
+        else if enableShort and rangeShort
+            entryAtr := atr
+            curId := "RANGE_S"
+            strategy.entry(curId, strategy.short, qty=q)
+
+// ===== SALIDAS =====
+if curId != "" and not na(entryAtr)
+    slTicks = (entryAtr * atrMult) / syminfo.mintick
+    if useTrail
+        strategy.exit("EXIT_" + curId, from_entry=curId,
+             loss=slTicks,
+             trail_points=(entryAtr * trailStart) / syminfo.mintick,
+             trail_offset=(entryAtr * trailOff) / syminfo.mintick)
+    else
+        strategy.exit("EXIT_" + curId, from_entry=curId,
+             loss=slTicks, profit=slTicks * rr)
+
+// ===== VISUAL =====
+plot(emaF, "EMA rapida", color=color.new(color.aqua, 20))
+plot(emaS, "EMA lenta",  color=color.new(color.orange, 20))
+bgcolor(trendMode ? color.new(color.green, 92) : rangeMode ? color.new(color.blue, 92) : na)
